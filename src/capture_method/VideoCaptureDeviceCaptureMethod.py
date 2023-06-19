@@ -27,9 +27,10 @@ def is_blank(image: cv2.typing.MatLike):
     # Instead we check for a few key pixels, in this case, corners
     return np.all(
         image[
-            ::image.shape[ImageShape.Y] - 1,
-            ::image.shape[ImageShape.X] - 1,
-        ] == OBS_VIRTUALCAM_PLUGIN_BLANK_PIXEL,
+            :: image.shape[ImageShape.Y] - 1,
+            :: image.shape[ImageShape.X] - 1,
+        ]
+        == OBS_VIRTUALCAM_PLUGIN_BLANK_PIXEL,
     )
 
 
@@ -37,8 +38,7 @@ class VideoCaptureDeviceCaptureMethod(CaptureMethodBase):
     name = "Video Capture Device"
     short_description = "see below"
     description = (
-        "\nUses a Video Capture Device, like a webcam, virtual cam, or capture card. "
-        + "\nYou can select one below. "
+        "\nUses a Video Capture Device, like a webcam, virtual cam, or capture card. " + "\nYou can select one below. "
     )
 
     capture_device: cv2.VideoCapture
@@ -131,8 +131,8 @@ class VideoCaptureDeviceCaptureMethod(CaptureMethodBase):
         y = min(selection["y"], image.shape[ImageShape.Y] - 1)
         x = min(selection["x"], image.shape[ImageShape.X] - 1)
         image = image[
-            y:y + selection["height"],
-            x:x + selection["width"],
+            y : y + selection["height"],
+            x : x + selection["width"],
         ]
         return cv2.cvtColor(image, cv2.COLOR_BGR2BGRA), is_old_image
 

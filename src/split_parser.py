@@ -15,7 +15,9 @@ if TYPE_CHECKING:
     BELOW_FLAG,
     PAUSE_FLAG,
     *_,
-] = [1 << i for i in range(31)]  # 32 bits of flags
+] = [
+    1 << i for i in range(31)
+]  # 32 bits of flags
 
 T = TypeVar("T", str, int, float)
 
@@ -177,8 +179,7 @@ def parse_and_validate_images(autosplit: AutoSplit):
     # Get split images
     all_images = [
         AutoSplitImage(os.path.join(autosplit.settings_dict["split_image_directory"], image_name))
-        for image_name
-        in os.listdir(autosplit.settings_dict["split_image_directory"])
+        for image_name in os.listdir(autosplit.settings_dict["split_image_directory"])
     ]
 
     # Find non-split images and then remove them from the list

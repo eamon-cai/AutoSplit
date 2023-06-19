@@ -69,9 +69,11 @@ def have_settings_changed(autosplit: AutoSplit):
 
 def save_settings(autosplit: AutoSplit):
     """@return: The save settings filepath. Or None if "Save Settings As" is cancelled."""
-    return __save_settings_to_file(autosplit, autosplit.last_successfully_loaded_settings_file_path) \
-        if autosplit.last_successfully_loaded_settings_file_path \
+    return (
+        __save_settings_to_file(autosplit, autosplit.last_successfully_loaded_settings_file_path)
+        if autosplit.last_successfully_loaded_settings_file_path
         else save_settings_as(autosplit)
+    )
 
 
 def save_settings_as(autosplit: AutoSplit):
@@ -80,8 +82,7 @@ def save_settings_as(autosplit: AutoSplit):
     save_settings_file_path = QtWidgets.QFileDialog.getSaveFileName(
         autosplit,
         "Save Settings As",
-        autosplit.last_successfully_loaded_settings_file_path
-        or os.path.join(auto_split_directory, "settings.toml"),
+        autosplit.last_successfully_loaded_settings_file_path or os.path.join(auto_split_directory, "settings.toml"),
         "TOML (*.toml)",
     )[0]
     # If user cancels save destination window, don't save settings
@@ -109,7 +110,8 @@ def __load_settings_from_file(autosplit: AutoSplit, load_settings_file_path: str
             # Casting here just so we can build an actual UserProfileDict once we're done validating
             # Fallback to default settings if some are missing from the file. This happens when new settings are added.
             loaded_settings = cast(
-                UserProfileDict, {
+                UserProfileDict,
+                {
                     **DEFAULT_PROFILE,
                     **toml.load(file),
                 },
@@ -148,12 +150,15 @@ def __load_settings_from_file(autosplit: AutoSplit, load_settings_file_path: str
 
 
 def load_settings(autosplit: AutoSplit, from_path: str = ""):
-    load_settings_file_path = from_path or QtWidgets.QFileDialog.getOpenFileName(
-        autosplit,
-        "Load Profile",
-        os.path.join(auto_split_directory, "settings.toml"),
-        "TOML (*.toml)",
-    )[0]
+    load_settings_file_path = (
+        from_path
+        or QtWidgets.QFileDialog.getOpenFileName(
+            autosplit,
+            "Load Profile",
+            os.path.join(auto_split_directory, "settings.toml"),
+            "TOML (*.toml)",
+        )[0]
+    )
     if not (load_settings_file_path and __load_settings_from_file(autosplit, load_settings_file_path)):
         return
 
@@ -164,11 +169,7 @@ def load_settings(autosplit: AutoSplit, from_path: str = ""):
 
 
 def load_settings_on_open(autosplit: AutoSplit):
-    settings_files = [
-        file for file
-        in os.listdir(auto_split_directory)
-        if file.endswith(".toml")
-    ]
+    settings_files = [file for file in os.listdir(auto_split_directory) if file.endswith(".toml")]
 
     # Find all .tomls in AutoSplit folder, error if there is not exactly 1
     error = None
@@ -189,9 +190,9 @@ def load_check_for_updates_on_open(autosplit: AutoSplit):
     Retrieve the "Check For Updates On Open" QSettings and set the checkbox state
     These are only global settings values. They are not *toml settings values.
     """
-    value = QtCore \
-        .QSettings("AutoSplit", "Check For Updates On Open") \
-        .value("check_for_updates_on_open", True, type=bool)
+    value = QtCore.QSettings("AutoSplit", "Check For Updates On Open").value(
+        "check_for_updates_on_open", True, type=bool
+    )
     # Type not infered by PySide6
     # TODO: Report this issue upstream
     autosplit.action_check_for_updates_on_open.setChecked(value)  # pyright: ignore[reportGeneralTypeIssues]
@@ -200,6 +201,4 @@ def load_check_for_updates_on_open(autosplit: AutoSplit):
 def set_check_for_updates_on_open(design_window: design.Ui_MainWindow, value: bool):
     """Sets the "Check For Updates On Open" QSettings value and the checkbox state."""
     design_window.action_check_for_updates_on_open.setChecked(value)
-    QtCore \
-        .QSettings("AutoSplit", "Check For Updates On Open") \
-        .setValue("check_for_updates_on_open", value)
+    QtCore.QSettings("AutoSplit", "Check For Updates On Open").setValue("check_for_updates_on_open", value)

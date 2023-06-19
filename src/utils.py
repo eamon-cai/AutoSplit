@@ -128,9 +128,9 @@ def get_direct3d_device():
 
     async def init_mediacapture():
         await (media_capture.initialize_async() or asyncio.sleep(0))
+
     asyncio.run(init_mediacapture())
-    direct_3d_device = media_capture.media_capture_settings and \
-        media_capture.media_capture_settings.direct3_d11_device
+    direct_3d_device = media_capture.media_capture_settings and media_capture.media_capture_settings.direct3_d11_device
     if not direct_3d_device:
         try:
             # May be problematic? https://github.com/pywinrt/python-winsdk/issues/11#issuecomment-1315345318
@@ -159,6 +159,7 @@ def fire_and_forget(func: Callable[..., Any]):
 
     Uses asyncio on Linux because of a `Segmentation fault (core dumped)`
     """
+
     def wrapped(*args: Any, **kwargs: Any):
         if sys.platform == "win32":
             thread = Thread(target=func, args=args, kwargs=kwargs)
