@@ -70,6 +70,7 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
     skip_split_signal = QtCore.Signal()
     undo_split_signal = QtCore.Signal()
     pause_signal = QtCore.Signal()
+    screenshot_signal = QtCore.Signal()
     after_setting_hotkey_signal = QtCore.Signal()
     update_checker_widget_signal = QtCore.Signal(str, bool)
     load_start_image_signal = QtCore.Signal(bool, bool)
@@ -162,7 +163,7 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
         self.action_load_profile.triggered.connect(lambda: user_profile.load_settings(self))
 
         # Connecting button clicks to functions
-        self.browse_button.clicked.connect(self.__browse)
+        self.split_image_folder_button.clicked.connect(self.__browse)
         self.select_region_button.clicked.connect(lambda: select_region(self))
         self.take_screenshot_button.clicked.connect(self.__take_screenshot)
         self.start_auto_splitter_button.clicked.connect(self.__auto_splitter)
@@ -198,6 +199,7 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
         self.skip_split_signal.connect(self.skip_split)
         self.undo_split_signal.connect(self.undo_split)
         self.pause_signal.connect(self.pause)
+        self.screenshot_signal.connect(self.__take_screenshot)
 
         # live image checkbox
         self.timer_live_image.timeout.connect(lambda: self.__update_live_image_details(None, True))
@@ -373,7 +375,7 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
         screenshot_index = 1
         while True:
             screenshot_path = os.path.join(
-                self.settings_dict["split_image_directory"],
+                self.settings_dict["screenshot_directory"] or self.settings_dict["split_image_directory"],
                 f"{screenshot_index:03}_SplitImage.png",
             )
             if not os.path.exists(screenshot_path):
@@ -719,7 +721,7 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
     def gui_changes_on_start(self):
         self.timer_start_image.stop()
         self.start_auto_splitter_button.setText("Running...")
-        self.browse_button.setEnabled(False)
+        self.split_image_folder_button.setEnabled(False)
         self.reload_start_image_button.setEnabled(False)
         self.previous_image_button.setEnabled(True)
         self.next_image_button.setEnabled(True)
@@ -749,7 +751,7 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
         self.table_reset_image_live_label.setText("-")
         self.table_reset_image_highest_label.setText("-")
         self.table_reset_image_threshold_label.setText("-")
-        self.browse_button.setEnabled(True)
+        self.split_image_folder_button.setEnabled(True)
         self.reload_start_image_button.setEnabled(True)
         self.previous_image_button.setEnabled(False)
         self.next_image_button.setEnabled(False)
