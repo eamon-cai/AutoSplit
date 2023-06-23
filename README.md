@@ -174,7 +174,7 @@ The best way to create a masked image is to set your capture region as the entir
 
 ### Reset image
 
-You can have one (and only one) image with the keyword `reset` in its name. AutoSplit will press the reset button when it finds this image. This image will only be used for resets and it will not be tied to any split. You can set a probability and pause time for it. The pause time is the amount of seconds AutoSplit will wait before checking for the reset image once the run starts. For example: `Reset_(0.95)_[10].png`.
+You can have one (and only one) image with the keyword `reset` in its name. AutoSplit will press the reset button when it finds this image. This image will only be used for resets and it will not be tied to any split. You can set a threshold and pause time for it. The pause time is the amount of seconds AutoSplit will wait before checking for the reset image once the run starts. For example: `Reset_(0.95)_[10].png`.
 
 ### Start image
 
@@ -240,13 +240,12 @@ Not a developer? You can still help through the following methods:
 - Sharing AutoSplit with other speedrunners
 - Upvoting the following upstream issues in libraries and tools we use:
   - <https://bugreports.qt.io/browse/QTBUG-114436>
-  - <https://github.com/astral-sh/ruff/issues/3821>
-  - <https://github.com/charliermarsh/ruff/issues/1256>
+  - <https://github.com/astral-sh/ruff/issues?q=is%3Aopen+involves%3AAvasam>
   - <https://github.com/opencv/opencv/issues/created_by/Avasam>
-  - <https://github.com/opencv/opencv/issues/23539>
-  - <https://github.com/opencv/opencv/issues/23158>
+  - <https://github.com/opencv/opencv/issues?q=is%3Aopen+involves%3AAvasam>
   - <https://github.com/pywinrt/python-winsdk/issues/11>
   - <https://github.com/microsoft/vscode/issues/40239>
+  - <https://github.com/microsoft/vscode/issues/168411>
   - <https://github.com/boppreh/keyboard/issues/171>
   - <https://github.com/boppreh/keyboard/issues/516>
   - <https://github.com/boppreh/keyboard/issues/216>

@@ -19,12 +19,20 @@ from winsdk.windows.foundation import AsyncStatus, IAsyncOperation
 from winsdk.windows.graphics.capture import GraphicsCaptureItem, GraphicsCapturePicker
 
 import error_messages
-from utils import BGR_CHANNEL_COUNT, MAXBYTE, ImageShape, get_window_bounds, is_valid_hwnd, is_valid_image
+from utils import (
+    BGR_CHANNEL_COUNT,
+    MAXBYTE,
+    ImageShape,
+    auto_split_directory,
+    get_window_bounds,
+    is_valid_hwnd,
+    is_valid_image,
+)
 
 user32 = ctypes.windll.user32
 
 if TYPE_CHECKING:
-    import cv2.typing  # noqa: TCH004
+    import cv2.typing
 
     from AutoSplit import AutoSplit
 
@@ -171,7 +179,7 @@ def align_region(autosplit: AutoSplit):
     template_filename = QtWidgets.QFileDialog.getOpenFileName(
         autosplit,
         "Select Reference Image",
-        "",
+        autosplit.settings_dict["split_image_directory"] or auto_split_directory,
         IMREAD_EXT_FILTER,
     )[0]
 
@@ -186,7 +194,7 @@ def align_region(autosplit: AutoSplit):
 
     # Validate template is a valid image file
     if not is_valid_image(template):
-        error_messages.align_region_image_type()
+        error_messages.image_validity()
         return
 
     # Obtaining the capture of a region which contains the
