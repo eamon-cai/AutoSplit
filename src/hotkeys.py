@@ -82,8 +82,9 @@ def _send_hotkey(hotkey_or_scan_code: int | str | None):
 
     # Deal with regular inputs
     # If an int or does not contain the following strings
-    if isinstance(hotkey_or_scan_code, int) \
-            or not ("num " in hotkey_or_scan_code or "decimal" in hotkey_or_scan_code or "+" in hotkey_or_scan_code):
+    if isinstance(hotkey_or_scan_code, int) or not (
+        "num " in hotkey_or_scan_code or "decimal" in hotkey_or_scan_code or "+" in hotkey_or_scan_code
+    ):
         keyboard.send(hotkey_or_scan_code)
         return
 
@@ -92,11 +93,7 @@ def _send_hotkey(hotkey_or_scan_code: int | str | None):
     # keyboard also has issues with capitalization modifier (shift+A)
     # keyboard.send(keyboard.key_to_scan_codes(key_or_scan_code)[1])
     pyautogui.hotkey(
-        *[
-            "+" if key == "plus" else key
-            for key
-            in hotkey_or_scan_code.replace(" ", "").split("+")
-        ],
+        *["+" if key == "plus" else key for key in hotkey_or_scan_code.replace(" ", "").split("+")],
     )
 
 
@@ -119,9 +116,7 @@ def __validate_keypad(expected_key: str, keyboard_event: keyboard.KeyboardEvent)
     if keyboard_event.name and is_digit(keyboard_event.name[-1]):
         # Prevent "regular numbers" and "keypad numbers" from activating each other
         return bool(
-            keyboard_event.is_keypad
-            if expected_key.startswith("num ")
-            else not keyboard_event.is_keypad,
+            keyboard_event.is_keypad if expected_key.startswith("num ") else not keyboard_event.is_keypad,
         )
 
     # Prevent "keypad action keys" from triggering "regular numbers" and "keypad numbers"
@@ -145,9 +140,7 @@ def __get_key_name(keyboard_event: keyboard.KeyboardEvent):
     # Normally this is done by keyboard.get_hotkey_name. But our code won't always get there.
     if event_name == "+":
         return "plus"
-    return f"num {keyboard_event.name}"  \
-        if keyboard_event.is_keypad and is_digit(keyboard_event.name) \
-        else event_name
+    return f"num {keyboard_event.name}" if keyboard_event.is_keypad and is_digit(keyboard_event.name) else event_name
 
 
 def __get_hotkey_name(names: list[str]):
@@ -163,6 +156,7 @@ def __get_hotkey_name(names: list[str]):
 
     def sorting_key(key: str):
         return not keyboard.is_modifier(keyboard.key_to_scan_codes(key)[0])
+
     clean_names = sorted(keyboard.get_hotkey_name(names).split("+"), key=sorting_key)
     # Replace the last key in hotkey_name with what we actually got as a last key_name
     # This ensures we keep proper keypad names
@@ -213,21 +207,20 @@ def __get_hotkey_action(autosplit: AutoSplit, hotkey: Hotkey):
     if hotkey == "undo_split":
         return lambda: autosplit.undo_split(True)
     if hotkey == "toggle_auto_reset_image":
+
         def toggle_auto_reset_image():
             new_value = not autosplit.settings_dict["enable_auto_reset"]
             autosplit.settings_dict["enable_auto_reset"] = new_value
             if autosplit.SettingsWidget:
                 autosplit.SettingsWidget.enable_auto_reset_image_checkbox.setChecked(new_value)
+
         return toggle_auto_reset_image
     return getattr(autosplit, f"{hotkey}_signal").emit
 
 
 def is_valid_hotkey_name(hotkey_name: str):
-    return any(
-        key and not keyboard.is_modifier(keyboard.key_to_scan_codes(key)[0])
-        for key
-        in hotkey_name.split("+")
-    )
+    return any(key and not keyboard.is_modifier(keyboard.key_to_scan_codes(key)[0]) for key in hotkey_name.split("+"))
+
 
 # TODO: using getattr/setattr is NOT a good way to go about this. It was only temporarily done to
 # reduce duplicated code. We should use a dictionary of hotkey class or something.
@@ -275,8 +268,7 @@ def set_hotkey(autosplit: AutoSplit, hotkey: Hotkey, preselected_hotkey_name: st
                 # This means "ctrl + num 5" and "ctrl + 5" will both be registered.
                 # For that reason, we still prefer keyboard.hook_key for single keys.
                 # keyboard module allows you to hit multiple keys for a hotkey. they are joined together by +.
-                keyboard.add_hotkey(hotkey_name, action)
-                if "+" in hotkey_name
+                keyboard.add_hotkey(hotkey_name, action) if "+" in hotkey_name
                 # We need to inspect the event to know if it comes from numpad because of _canonial_names.
                 # See: https://github.com/boppreh/keyboard/issues/161#issuecomment-386825737
                 # The best way to achieve this is make our own hotkey handling on top of hook

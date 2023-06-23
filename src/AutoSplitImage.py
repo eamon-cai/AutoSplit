@@ -52,30 +52,22 @@ class AutoSplitImage:
 
     def get_delay_time(self, default: AutoSplit | int):
         """Get image's delay time or fallback to the default value from spinbox."""
-        default_value = default \
-            if isinstance(default, int) \
-            else default.settings_dict["default_delay_time"]
+        default_value = default if isinstance(default, int) else default.settings_dict["default_delay_time"]
         return default_value if self.__delay_time is None else self.__delay_time
 
     def __get_comparison_method(self, default: AutoSplit | int):
         """Get image's comparison or fallback to the default value from combobox."""
-        default_value = default \
-            if isinstance(default, int) \
-            else default.settings_dict["default_comparison_method"]
+        default_value = default if isinstance(default, int) else default.settings_dict["default_comparison_method"]
         return default_value if self.__comparison_method is None else self.__comparison_method
 
     def get_pause_time(self, default: AutoSplit | float):
         """Get image's pause time or fallback to the default value from spinbox."""
-        default_value = default \
-            if isinstance(default, float) \
-            else default.settings_dict["default_pause_time"]
+        default_value = default if isinstance(default, float) else default.settings_dict["default_pause_time"]
         return default_value if self.__pause_time is None else self.__pause_time
 
     def get_similarity_threshold(self, default: AutoSplit | float):
         """Get image's similarity threshold or fallback to the default value from spinbox."""
-        default_value = default \
-            if isinstance(default, float) \
-            else default.settings_dict["default_similarity_threshold"]
+        default_value = default if isinstance(default, float) else default.settings_dict["default_similarity_threshold"]
         return default_value if self.__similarity_threshold is None else self.__similarity_threshold
 
     def __init__(self, path: str):
@@ -147,7 +139,8 @@ class AutoSplitImage:
         return COMPARE_METHODS_BY_INDEX.get(comparison_method, compare_dummy)(self.byte_array, capture, self.mask)
 
 
-def compare_dummy(*_: object): return 0.0
+def compare_dummy(*_: object):
+    return 0.0
 
 
 if True:

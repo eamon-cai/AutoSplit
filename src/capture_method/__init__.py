@@ -46,6 +46,7 @@ class CaptureMethodEnum(Enum, metaclass=CaptureMethodMeta):
     @override
     def __repr__(self):
         return self.value
+
     __str__ = __repr__
 
     # Allow direct comparison with strings
@@ -87,11 +88,13 @@ class CaptureMethodDict(OrderedDict[CaptureMethodEnum, type[CaptureMethodBase]])
         return list(self.keys())[index]
 
     if TYPE_CHECKING:
+
         @override
         def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride] # Disallow unsafe get
             self,
             __key: Never,
-        ) -> NoReturn: ...
+        ) -> NoReturn:
+            ...
 
     @override
     def get(self, key: CaptureMethodEnum, __default: object = None):
@@ -115,6 +118,7 @@ if (  # Windows Graphics Capture requires a minimum Windows Build
 CAPTURE_METHODS[CaptureMethodEnum.BITBLT] = BitBltCaptureMethod
 try:  # Test for laptop cross-GPU Desktop Duplication issue
     import d3dshot
+
     d3dshot.create(capture_output="numpy")
 except (ModuleNotFoundError, COMError):
     pass
@@ -186,20 +190,11 @@ async def get_all_video_capture_devices() -> list[CameraInfo]:
         #     video_capture.release()
 
         resolution = get_input_device_resolution(index)
-        return CameraInfo(index, device_name, False, backend, resolution) \
-            if resolution is not None \
-            else None
+        return CameraInfo(index, device_name, False, backend, resolution) if resolution is not None else None
 
     # Note: Return type required https://github.com/python/typeshed/issues/2652
     future = asyncio.gather(
-        *[
-            get_camera_info(index, name) for index, name
-            in enumerate(named_video_inputs)
-        ],
+        *[get_camera_info(index, name) for index, name in enumerate(named_video_inputs)],
     )
 
-    return [
-        camera_info for camera_info
-        in await future
-        if camera_info is not None
-    ]
+    return [camera_info for camera_info in await future if camera_info is not None]

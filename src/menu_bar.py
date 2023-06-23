@@ -141,7 +141,8 @@ class __SettingsWidget(QtWidgets.QWidget, settings_ui.Ui_SettingsWidget):  # noq
             return 0
 
     def __enable_capture_device_if_its_selected_method(
-            self, selected_capture_method: str | CaptureMethodEnum | None = None,
+        self,
+        selected_capture_method: str | CaptureMethodEnum | None = None,
     ):
         if selected_capture_method is None:
             selected_capture_method = self.autosplit.settings_dict["capture_method"]
@@ -184,21 +185,21 @@ class __SettingsWidget(QtWidgets.QWidget, settings_ui.Ui_SettingsWidget):  # noq
         if len(self.__video_capture_devices) > 0:
             for i in range(self.capture_device_combobox.count()):
                 self.capture_device_combobox.removeItem(i)
-            self.capture_device_combobox.addItems([
-                f"* {device.name}"
-                + (f" [{device.backend}]" if device.backend else "")
-                + (" (occupied)" if device.occupied else "")
-                for device in self.__video_capture_devices
-            ])
+            self.capture_device_combobox.addItems(
+                [
+                    f"* {device.name}"
+                    + (f" [{device.backend}]" if device.backend else "")
+                    + (" (occupied)" if device.occupied else "")
+                    for device in self.__video_capture_devices
+                ]
+            )
             self.__enable_capture_device_if_its_selected_method()
         else:
             self.capture_device_combobox.setPlaceholderText("No device found.")
 
     def __set_readme_link(self):
         self.custom_image_settings_info_label.setText(
-            self.custom_image_settings_info_label
-                .text()
-                .format(GITHUB_REPOSITORY=GITHUB_REPOSITORY),
+            self.custom_image_settings_info_label.text().format(GITHUB_REPOSITORY=GITHUB_REPOSITORY),
         )
         # HACK: This is a workaround because custom_image_settings_info_label
         # simply will not open links with a left click no matter what we tried.
@@ -229,8 +230,7 @@ class __SettingsWidget(QtWidgets.QWidget, settings_ui.Ui_SettingsWidget):  # noq
         # Don't autofocus any particular field
         self.setFocus()
 
-
-# region Build the Capture method combobox
+        # region Build the Capture method combobox
         capture_method_values = CAPTURE_METHODS.values()
         self.__set_all_capture_devices()
 
@@ -241,21 +241,18 @@ class __SettingsWidget(QtWidgets.QWidget, settings_ui.Ui_SettingsWidget):  # noq
         # list_view.setFixedWidth(self.capture_method_combobox.width())
         # self.capture_method_combobox.setView(list_view)
 
-        self.capture_method_combobox.addItems([
-            f"- {method.name} ({method.short_description})"
-            for method in capture_method_values
-        ])
-        self.capture_method_combobox.setToolTip(
-            "\n\n".join([
-                f"{method.name} :\n{method.description}"
-                for method in capture_method_values
-            ]),
+        self.capture_method_combobox.addItems(
+            [f"- {method.name} ({method.short_description})" for method in capture_method_values]
         )
-# endregion
+        self.capture_method_combobox.setToolTip(
+            "\n\n".join([f"{method.name} :\n{method.description}" for method in capture_method_values]),
+        )
+        # endregion
 
         # Hotkey initial values and bindings
         def hotkey_connect(hotkey: Hotkey):
             return lambda: set_hotkey(self.autosplit, hotkey)
+
         for hotkey in HOTKEYS:
             hotkey_input: QtWidgets.QLineEdit = getattr(self, f"{hotkey}_input")
             set_hotkey_hotkey_button: QtWidgets.QPushButton = getattr(self, f"set_{hotkey}_hotkey_button")
@@ -272,7 +269,7 @@ class __SettingsWidget(QtWidgets.QWidget, settings_ui.Ui_SettingsWidget):  # noq
                 set_hotkey_hotkey_button.setEnabled(False)
                 hotkey_input.setEnabled(False)
 
-# region Set initial values
+        # region Set initial values
         # Capture Settings
         self.fps_limit_spinbox.setValue(autosplit.settings_dict["fps_limit"])
         self.live_capture_region_checkbox.setChecked(autosplit.settings_dict["live_capture_region"])
@@ -290,8 +287,8 @@ class __SettingsWidget(QtWidgets.QWidget, settings_ui.Ui_SettingsWidget):  # noq
         self.default_pause_time_spinbox.setValue(autosplit.settings_dict["default_pause_time"])
         self.loop_splits_checkbox.setChecked(autosplit.settings_dict["loop_splits"])
         self.enable_auto_reset_image_checkbox.setChecked(autosplit.settings_dict["enable_auto_reset"])
-# endregion
-# region Binding
+        # endregion
+        # region Binding
         # Capture Settings
         self.fps_limit_spinbox.valueChanged.connect(self.__fps_limit_changed)
         self.live_capture_region_checkbox.stateChanged.connect(
@@ -306,7 +303,8 @@ class __SettingsWidget(QtWidgets.QWidget, settings_ui.Ui_SettingsWidget):  # noq
         # Image Settings
         self.default_comparison_method_combobox.currentIndexChanged.connect(
             lambda: self.__set_value(
-                "default_comparison_method", self.default_comparison_method_combobox.currentIndex(),
+                "default_comparison_method",
+                self.default_comparison_method_combobox.currentIndex(),
             ),
         )
         self.default_similarity_threshold_spinbox.valueChanged.connect(
@@ -324,7 +322,7 @@ class __SettingsWidget(QtWidgets.QWidget, settings_ui.Ui_SettingsWidget):  # noq
         self.enable_auto_reset_image_checkbox.stateChanged.connect(
             lambda: self.__set_value("enable_auto_reset", self.enable_auto_reset_image_checkbox.isChecked()),
         )
-# endregion
+        # endregion
 
         self.show()
 
