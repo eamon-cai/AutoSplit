@@ -93,8 +93,7 @@ def save_settings_as(autosplit: AutoSplit):
     save_settings_file_path = QtWidgets.QFileDialog.getSaveFileName(
         autosplit,
         "Save Settings As",
-        autosplit.last_successfully_loaded_settings_file_path
-        or os.path.join(auto_split_directory, "settings.toml"),
+        autosplit.last_successfully_loaded_settings_file_path or os.path.join(auto_split_directory, "settings.toml"),
         "TOML (*.toml)",
     )[0]
     # If user cancels save destination window, don't save settings
@@ -181,11 +180,7 @@ def load_settings(autosplit: AutoSplit, from_path: str = ""):
 
 
 def load_settings_on_open(autosplit: AutoSplit):
-    settings_files = [
-        file for file
-        in os.listdir(auto_split_directory)
-        if file.endswith(".toml")
-    ]
+    settings_files = [file for file in os.listdir(auto_split_directory) if file.endswith(".toml")]
 
     # Find all .tomls in AutoSplit folder, error if there is not exactly 1
     error = None
@@ -210,9 +205,7 @@ def load_check_for_updates_on_open(autosplit: AutoSplit):
     # TODO: Report this issue upstream
     value = cast(
         bool,
-        QtCore
-        .QSettings("AutoSplit", "Check For Updates On Open")
-        .value("check_for_updates_on_open", True, type=bool),
+        QtCore.QSettings("AutoSplit", "Check For Updates On Open").value("check_for_updates_on_open", True, type=bool),
     )
     autosplit.action_check_for_updates_on_open.setChecked(value)
 
@@ -220,6 +213,4 @@ def load_check_for_updates_on_open(autosplit: AutoSplit):
 def set_check_for_updates_on_open(design_window: design.Ui_MainWindow, value: bool):
     """Sets the "Check For Updates On Open" QSettings value and the checkbox state."""
     design_window.action_check_for_updates_on_open.setChecked(value)
-    QtCore \
-        .QSettings("AutoSplit", "Check For Updates On Open") \
-        .setValue("check_for_updates_on_open", value)
+    QtCore.QSettings("AutoSplit", "Check For Updates On Open").setValue("check_for_updates_on_open", value)

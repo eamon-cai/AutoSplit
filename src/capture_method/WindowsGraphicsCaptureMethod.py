@@ -17,7 +17,6 @@ from capture_method.CaptureMethodBase import CaptureMethodBase
 from utils import BGRA_CHANNEL_COUNT, WGC_MIN_BUILD, WINDOWS_BUILD_NUMBER, get_direct3d_device, is_valid_hwnd
 
 if TYPE_CHECKING:
-
     from AutoSplit import AutoSplit
 
 WGC_NO_BORDER_MIN_BUILD = 20348
@@ -150,7 +149,5 @@ class WindowsGraphicsCaptureMethod(CaptureMethodBase):
     @override
     def check_selected_region_exists(self, autosplit: AutoSplit):
         return bool(
-            is_valid_hwnd(autosplit.hwnd)
-            and self.frame_pool
-            and self.session,
+            is_valid_hwnd(autosplit.hwnd) and self.frame_pool and self.session,
         )
